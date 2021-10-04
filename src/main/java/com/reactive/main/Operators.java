@@ -1,5 +1,6 @@
 package com.reactive.main;
 
+import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -17,12 +18,15 @@ import java.util.function.Function;
 //                  -> onNext
 //                  -> onComplete
 
+@Slf4j
 public class Operators {
     public static void main(String[] args) {
         Publisher<Integer> intPub = intPub();
         Publisher<Integer> mapPub = mapPub(intPub, s -> s * 10);
 
         mapPub.subscribe(new DelegateSub());
+
+        log.debug("exit");
     }
 
     private static Publisher<Integer> mapPub(Publisher<Integer> pub, Function<Integer, Integer> func) {

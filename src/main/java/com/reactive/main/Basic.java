@@ -1,5 +1,6 @@
 package com.reactive.main;
 
+import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -7,6 +8,7 @@ import org.reactivestreams.Subscription;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 public class Basic {
     public static void main(String[] args) {
         Publisher<Integer> pub = new Publisher<Integer>() {
@@ -32,26 +34,28 @@ public class Basic {
         Subscriber<Integer> sub = new Subscriber<Integer>() {
             @Override
             public void onSubscribe(Subscription s) {
-                System.out.println("onSubscribe");
+                log.debug("onSubscribe");
                 s.request(Long.MAX_VALUE);
             }
 
             @Override
             public void onNext(Integer integer) {
-                System.out.println("onNext " + integer);
+                log.debug("onNext " + integer);
             }
 
             @Override
             public void onError(Throwable t) {
-                System.out.println("onError");
+                log.debug("onError");
             }
 
             @Override
             public void onComplete() {
-                System.out.println("onComplete");
+                log.debug("onComplete");
             }
         };
 
         pub.subscribe(sub);
+
+        log.debug("exit");
     }
 }
