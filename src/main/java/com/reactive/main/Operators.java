@@ -36,6 +36,7 @@ public class Operators {
                 pub.subscribe(new DelegateSub() {
                     @Override
                     public void onNext(Integer i) {
+                        log.debug("pub onNext " + i);
                         s.onNext(func.apply(i));
                     }
                 });
