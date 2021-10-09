@@ -9,16 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Function;
-
-
-// intPub -> [Data1] -> map -> [Data2] -> intSub
-//                  map도 intSub 입장에선 publisher
-//                  <- subscribe(subA)
-//                  -> onSubscribe(s)
-//                  -> onNext
-//                  -> onNext
-//                  -> onComplete
 
 @Slf4j
 public class Schedulers {
@@ -35,7 +25,38 @@ public class Schedulers {
             }
         };
 
-        schedularOnSub.subscribe(intSub);
+        Publisher<Integer> schedularOnPub = new Publisher<Integer>() {
+            @Override
+            public void subscribe(Subscriber<? super Integer> s) {
+                schedularOnSub.subscribe(new Subscriber<Integer>() {
+                    ExecutorService es = Executors.newSingleThreadExecutor();
+
+                    @Override
+                    public void onSubscribe(Subscription s) {
+                        intSub.onSubscribe(s);
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        es.execute(() -> intSub.onNext(integer));
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        es.execute(() -> intSub.onError(t));
+                        es.shutdown();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        es.execute(() -> intSub.onComplete());
+                        es.shutdown();
+                    }
+                });
+            }
+        };
+
+        schedularOnPub.subscribe(intSub);
         log.debug("exit");
     }
 
@@ -48,6 +69,7 @@ public class Schedulers {
                 s.onSubscribe(new Subscription() {
                     @Override
                     public void request(long n) {
+                        log.debug("request");
                         list.forEach(s::onNext);
                         s.onComplete();
                     }
