@@ -12,7 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class SchedulerFlux2 {
+public class SchedulerFluxTakeFunction {
     public static void main(String[] args) throws InterruptedException {
 //        유저가 만든 쓰레드는 main쓰레드가 종료되어도 종료되지 않는다.
 //        interval: 타이머쓰레드 -> 데몬쓰레드
