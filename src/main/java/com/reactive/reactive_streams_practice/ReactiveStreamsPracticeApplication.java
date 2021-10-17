@@ -31,7 +31,7 @@ public class ReactiveStreamsPracticeApplication {
         }
     }
 
-    @GetMapping
+    @GetMapping("/rest")
     // Mono를 리턴하면서 Spring Boot가 알아서 subscribe한다.
     public Mono<String> rest(int idx) {
         // 정의하는 것만으로는 api호출이 되지 않는다
