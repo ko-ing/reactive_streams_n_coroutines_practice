@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ import java.util.concurrent.Future;
 @SpringBootApplication
 @RestController
 @Slf4j
+@EnableAsync
 public class ReactiveStreamsPracticeApplication {
     static final String URL1 = "http://localhost:8081/service?req={req}";
     static final String URL2 = "http://localhost:8081/service2?req={req}";
@@ -43,9 +45,11 @@ public class ReactiveStreamsPracticeApplication {
         // Mono는 Publisher이다. publisher는 누군가 sbscribe를 하지 않으면 데이터를 쏘지 않는다.
         // exchange를 통해 요청을 보내고 응답을 받음
         return client.get().uri(URL1, idx).exchangeToMono(r -> r.bodyToMono(String.class)) // netty worker 스레드에서 작동?
+            .doOnNext(log::info)
             .flatMap(res1 ->
                 client.get().uri(URL2, res1).exchangeToMono(r -> r.bodyToMono(String.class))
             )
+            .doOnNext(log::info)
             .flatMap(res -> Mono.fromCompletionStage(myService.work(res)));
     }
 
