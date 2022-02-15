@@ -12,15 +12,14 @@ public class SchedulerFlux {
         Scheduler subScheduler = Schedulers.newSingle("Sub");
 
         Flux.range(1, 10)
-            .publishOn(pubScheduler)
-            .log()
-            .subscribeOn(subScheduler)
-            .log()
-            .doOnComplete(() -> {
-                pubScheduler.dispose();
-                subScheduler.dispose();
-            })
-            .subscribe(System.out::println);
+                .publishOn(pubScheduler)
+                .log()
+                .subscribeOn(subScheduler)
+                .doOnComplete(() -> {
+                    pubScheduler.dispose();
+                    subScheduler.dispose();
+                })
+                .subscribe(System.out::println);
 
         log.debug("exit");
     }
