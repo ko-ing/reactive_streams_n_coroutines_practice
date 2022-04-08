@@ -11,15 +11,18 @@ fun main() {
 
     val flux = Mono.zip(mono, mono2)
         .map { tuple ->
-            list.map {
+            println("HEY")
+            val a = list.map {
                 it + tuple.t1 + tuple.t2
             }
+            a
         }
-        .flatMapMany { Flux.fromIterable(it) }
+        .flatMapMany { Flux.fromIterable(it) }.log()
 
     flux.flatMap { fluxString ->
         Mono.zip(Mono.just(fluxString), mono, mono2)
     }.map { t ->
+        println("YA")
         t.t1 + t.t2 + t.t3
     }
 //        .log()
