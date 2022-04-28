@@ -25,7 +25,6 @@ fun main() {
         println("YA")
         t.t1 + t.t2 + t.t3
     }
-//        .log()
         .subscribe()
 }
 
