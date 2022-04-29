@@ -30,9 +30,9 @@ public class Operators {
     }
 
     private static Publisher<Integer> mapPub(Publisher<Integer> pub, Function<Integer, Integer> func) {
-        return new Publisher<>() {
+        return new Publisher<Integer>() {
             @Override
-            public void subscribe(Subscriber<? super Integer> s) {
+            public void subscribe(Subscriber s) {
                 pub.subscribe(new DelegateSub() {
                     @Override
                     public void onNext(Integer i) {
@@ -45,11 +45,11 @@ public class Operators {
     }
 
     private static Publisher<Integer> intPub() {
-        return new Publisher<>() {
+        return new Publisher<Integer>() {
             List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
 
             @Override
-            public void subscribe(Subscriber<? super Integer> s) {
+            public void subscribe(Subscriber s) {
                 s.onSubscribe(new Subscription() {
                     @Override
                     public void request(long n) {

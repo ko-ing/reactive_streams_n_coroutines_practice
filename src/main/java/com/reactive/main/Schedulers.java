@@ -61,11 +61,11 @@ public class Schedulers {
     }
 
     private static Publisher<Integer> intPub() {
-        return new Publisher<>() {
+        return new Publisher() {
             List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
 
             @Override
-            public void subscribe(Subscriber<? super Integer> s) {
+            public void subscribe(Subscriber s) {
                 s.onSubscribe(new Subscription() {
                     @Override
                     public void request(long n) {
