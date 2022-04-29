@@ -43,7 +43,7 @@ fun main() {
                     hey(it)
                 }
             }
-            .flowOn(threadPool.asCoroutineDispatcher())
+            .flowOn(Dispatchers.Unconfined)
             .collect()
 //            .collect {
 ////                async { println("[${Thread.currentThread().name}] $it.toString()") }
