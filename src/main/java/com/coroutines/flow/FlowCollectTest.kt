@@ -1,6 +1,7 @@
 package com.coroutines.flow
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -8,8 +9,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
+import kotlin.coroutines.coroutineContext
 
 private val threadPoolSize = 5
 private val threadPool = Executors.newFixedThreadPool(threadPoolSize)
@@ -17,7 +20,7 @@ private val threadPool = Executors.newFixedThreadPool(threadPoolSize)
 suspend fun hey(int: Int) {
     val random = Math.random().times(1000).toLong()
     delay(random)
-    println("${Thread.currentThread().name} [$int]: {$random} HEYEYE")
+    println("${coroutineContext[Job]} [$int]: {$random} HEYEYE")
 }
 
 fun main() {
@@ -29,8 +32,16 @@ fun main() {
                     emit(it)
                 }
         }
+//            .onEach {
+//                async {
+//                    println("${Thread.currentThread().name}")
+//                }
+//
+//            }
             .onEach {
-                hey(it)
+                async {
+                    hey(it)
+                }
             }
             .flowOn(threadPool.asCoroutineDispatcher())
             .collect()
