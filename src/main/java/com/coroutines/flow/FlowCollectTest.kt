@@ -19,7 +19,7 @@ import kotlin.coroutines.coroutineContext
 private val threadPoolSize = 5
 private val threadPool = Executors.newFixedThreadPool(threadPoolSize)
 
-fun hey(int: Int): Int {
+suspend fun hey(int: Int): Int {
     val random = Math.random().times(1000).toLong()
     delay(random)
     println(Thread.currentThread())
@@ -67,7 +67,7 @@ fun test2() {
             (1..29)
 //            .chunked(5)
                 .forEach {
-                    launch(Dispatchers.) {
+                    launch(Dispatchers.Default) {
 //                        try {
 
                             hey(it)
