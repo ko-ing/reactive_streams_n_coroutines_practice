@@ -13,17 +13,16 @@ class FluxExceptionTest {
                 if (string == "C") throw IllegalArgumentException("[IllegalArgument] Try Other Ways")
                 println("HELLO $string")
             }
-            .onErrorContinue { e, _ ->
-                logger.error(e.message, e)
-            }
+//            .onErrorContinue { e, _ ->
+//                logger.error(e.message, e)
+//            }
             .doOnNext { string ->
-                if (string == "D") throw IllegalArgumentException("[Second IllegalArgument] Are You Sure?")
+//                if (string == "D") throw IllegalArgumentException("[Second IllegalArgument] Are You Sure?")
                 println("WORLD $string")
             }
             .onErrorContinue { e, _ ->
                 logger.error(e.message, e)
             }
-            .collectList()
-            .block()
+            .blockLast()
     }
 }
