@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.lang.IllegalArgumentException
 import java.util.concurrent.Executors
 import kotlin.coroutines.coroutineContext
@@ -29,8 +30,9 @@ suspend fun hey(int: Int): Int {
 
 fun main() {
 //    test1()
-    test2()
+//    test2()
 //    test3()
+    test4()
 }
 
 fun test1() {
@@ -53,7 +55,7 @@ fun test1() {
                     hey(it)
                 }
             }
-            .flowOn(Dispatchers.Unconfined)
+//            .flowOn(Dispatchers.Unconfined)
             .collect()
 //            .collect {
 ////                async { println("[${Thread.currentThread().name}] $it.toString()") }
@@ -89,18 +91,39 @@ fun test2() {
 fun test3() {
     runBlocking {
         try {
-            (1..31)
+            val ad = (1..31)
                 .map {
                     async {
-                        if (it == 1) throw IllegalArgumentException("hey this is wrong")
+//                        if (it == 1) throw IllegalArgumentException("hey this is wrong")
                         hey(it)
                     }
                 }
+//                .map {
+//                    println("THIS IS REAL: $a")
+//                    val a = it.await()
+//                }
                 .toList()
                 .awaitAll()
+                .all {
+                    val ed = it
+                    println("THIS IS REAL: $ed")
+                    ed != 100
+                }
+            println("AD: $ad")
 //            println("I'm tmp ${tmp}")
         } catch (e: Exception) {
             println(e)
         }
+    }
+}
+
+fun test4() {
+    runBlocking {
+        (1..16)
+            .map {
+                async {
+                    hey(it)
+                }
+            }.map { it.await() }
     }
 }
